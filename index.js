@@ -1,5 +1,6 @@
 const SlackBot = require('slackbots');
 const { help } = require('./help');
+const { question } = require('./question');
 
 const bot = new SlackBot({
   token: process.env.SLACK_TOKEN,
@@ -7,17 +8,17 @@ const bot = new SlackBot({
 });
 
 const commands = {
-  help
+  help,
+  question
 }
-console.log(commands);
-
 bot.on('message', data => {
   if(data.type !== 'message') return;
   const message = data.text.split(" ");
   if(message[0] !== 'miko') return;
+  console.log(bot);
   if(message[1] === undefined) {
     bot.postMessage(data.channel, `
-  Hello~~ \n For a list of my commands please type "miko help" 0W0.
+  Hello~~ \n For a list of my commands please type "miko help" uwu.
   `)
   return;
   }
