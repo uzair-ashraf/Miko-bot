@@ -9,5 +9,10 @@ bot.on('message', data => {
   if(data.type !== 'message') return;
   const message = data.text.split(" ");
   if(message[0] !== 'miko') return;
-  console.log(message);
+    // bot.postMessage(data.user, 'no u');
+    // bot.postMessageToUser(data.user, message);
+  // bot.openIm(data.user)
+  // .then(data => console.log(data))
+  console.log(data.channel);
+  bot.postMessage(data.channel, 'Hello!')
 })
