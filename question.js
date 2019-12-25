@@ -1,6 +1,5 @@
-const axios = require('axios');
-const FormData = require('form-data');
-const fs = require('fs');
+const { imageUpload } = require('./imageUpload');
+const { delay } = require('./delay');
 
 const question = (bot, data) => {
   bot.postMessage(data.channel, `
@@ -29,22 +28,7 @@ const question = (bot, data) => {
             `)
           }, 2200))
             .then( () => setTimeout( () => {
-              console.log(process.env.SLACK_TOKEN)
-              const imageData = new FormData();
-              imageData.append("file", fs.createReadStream("images/question-example.JPG"))
-              console.log(imageData);
-              axios({
-                url: 'https://slack.com/api/files.upload',
-                method: 'POST',
-                headers: { 'Content-Type': 'multipart/form-data' },
-                data: {
-                  token: process.env.SLACK_TOKEN,
-                  channel: data.channel,
-                  file: imageData
-                }
-              })
-              .then(data => console.log(data))
-              .catch(err => console.log(err))
+              imageUpload(data.channel, "images/question-example.JPG")
               // bot.postMessage(data.channel, `
               // Here is an example of a good question
               // https://drive.google.com/uc?export=view&id=1-uqJDz895Xf-GbRoKxBMHJA71nlcHyU_
