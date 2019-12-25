@@ -15,7 +15,6 @@ bot.on('message', data => {
   if(data.type !== 'message') return;
   const message = data.text.split(" ");
   if(message[0] !== 'miko') return;
-  console.log(bot);
   if(message[1] === undefined) {
     bot.postMessage(data.channel, `
   Hello~~ \n For a list of my commands please type "miko help" uwu.
