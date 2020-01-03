@@ -20,6 +20,7 @@ const calendar = google.calendar({
   project: GOOGLE_PROJECT_NUMBER,
   auth: jwtClient
 })
+
 class ScheduleSession {
   constructor(calendarApiClient, calendarId) {
     this.sessions = {}
