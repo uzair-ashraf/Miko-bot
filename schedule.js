@@ -1,13 +1,13 @@
-const miko = require('./miko');
 const sessions = require('./scheduleSession');
 
 
 const schedule = (data, message) => {
-  if(message) {
-    console.log(message);
+  if(!message) {
+    sessions.startSession(data)
     return
   }
-  sessions.startSession(data)
+  console.log(message);
+  sessions.handleResponse(data, message);
 }
 
 module.exports = { schedule }

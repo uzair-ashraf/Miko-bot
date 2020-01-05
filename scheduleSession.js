@@ -35,14 +35,34 @@ class ScheduleSession {
     this.sessions[user].name = miko.getUsers()._value.members.find(userProfile => {
       return userProfile.id === user
     }).real_name;
-    miko.postMessage(data.channel, `
-    Hello ${this.sessions[user].name.split(" ")[0]} Miko is starting a scheduling session for you ~
+    const now = new Date();
+    const today = this.getToday(now);
+    if (today === "Saturday" || today === "Sunday") {
+      const followingWeek = this.getFollowingWeek(now, today);
+      miko.postMessage(channel, `
+      Hello ${this.sessions[user].name.split(" ")[0]}
+      Miko is starting a scheduling session for you.
+      Unfortunately LearningFuze is closed today.
+      Please select one of the following days:\n
+      ${followingWeek.reduce((acc, day) => {
+        return acc + day.forUser + "\n"
+      }, '')}
+
+      When responding please use the same format as displayed.
+      For example your response can look like:
+
+      "miko 2007-08-31"
   `)
+    }
     this.handleTimeUpdate(user)
-    this.getCurrentSchedule()
+    this.getTodaysSchedule()
     console.log("session starting")
   }
-  getCurrentSchedule() {
+  handleResponse({ user }, command) {
+    console.log(user)
+    console.log(command);
+  }
+  getTodaysSchedule() {
     this.calendarApi.events.list({
       calendarId: this.calendarId,
       timeMin: (new Date()).toISOString(),
@@ -57,6 +77,30 @@ class ScheduleSession {
       }
     })
   }
+  getToday(date) {
+    const daysOfWeek = ["Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"];
+    return daysOfWeek[date.getDay()];
+  }
+  getFollowingWeek(date, today) {
+    const followingWeek = [];
+    let currentTime = date.getTime();
+    let counter = today === "Saturday" ? 2 : 1;
+    let weekCondition = counter === 2 ? 6 : 5
+      while (counter <= weekCondition) {
+        const dayNextWeek = {}
+        dayNextWeek.forApi = new Date(currentTime + counter * 24 * 60 * 60 * 1000).toISOString()
+        dayNextWeek.forUser = dayNextWeek.forApi.split("T")[0]
+        followingWeek.push(dayNextWeek)
+        counter++
+      }
+      return followingWeek
+    }
   isInSession(userId) {
     return !!this.sessions[userId]
   }
