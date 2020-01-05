@@ -32,6 +32,12 @@ class ScheduleSession {
     const { user, channel } = data;
     this.sessions[user] = {}
     this.sessions[user].channel = channel;
+    this.sessions[user].name = miko.getUsers()._value.members.find(userProfile => {
+      return userProfile.id === user
+    }).real_name;
+    miko.postMessage(data.channel, `
+    Hello ${this.sessions[user].name.split(" ")[0]} Miko is starting a scheduling session for you ~
+  `)
     this.handleTimeUpdate(user)
     this.getCurrentSchedule()
     console.log("session starting")
@@ -47,7 +53,7 @@ class ScheduleSession {
       if(err) {
         console.log(err)
       } else {
-        console.log(res)
+        console.log(res.data.items)
       }
     })
   }

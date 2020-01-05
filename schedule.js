@@ -7,9 +7,6 @@ const schedule = (data, message) => {
     console.log(message);
     return
   }
-  miko.postMessage(data.channel, `
-    Miko is starting a scheduling session for you ~
-  `)
   sessions.startSession(data)
 }
 
