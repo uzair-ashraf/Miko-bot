@@ -61,19 +61,27 @@ class ScheduleSession {
       })
       if(!dateToSelect) {
         miko.postMessage(this.sessions[user].channel, `
-        >.< ${this.sessions[user].name.split(" ")[0]}..
-        I did not understand that command,
-        You are currently in a scheduling session, so I wont
-        be able to understand any other request
-        To exit the session send "miko terminate"
-        Or simply wait out the 30 second time out.
+        Miko did not understand that date, please check your format and try again
         `)
         return;
       }
-
+      this.sessions[user].stage.dateSelected = true;
+      miko.postMessage(this.sessions[user].channel, `
+      Sounds good! Give me a moment while I check what times are free on that day.
+      `)
+      .then(() => {
+        this.getSchedule(dateToSelect);
+      })
+      return;
     }
-    const isDate = new Date(command);
-    console.log(isDate);
+      miko.postMessage(this.sessions[user].channel, `
+          >.< ${this.sessions[user].name.split(" ")[0]}..
+          I did not understand that command,
+          You are currently in a scheduling session, so I wont
+          be able to understand any other request
+          To exit the session send "miko terminate"
+          Or simply wait out the 30 second time out.
+          `)
   }
   handleWeekendRequest(user, dateObj, today) {
     this.sessions[user].possibleDates = this.getFollowingWeek(dateObj, today);
@@ -92,11 +100,13 @@ class ScheduleSession {
       "miko 2007-08-31"
   `)
   }
-  getTodaysSchedule() {
+  getSchedule(day) {
+    const selectedDay = new Date(day.forApi);
+    const nextDay = new Date(selectedDay.getTime() + (24 * 60 * 60 * 1000)).toISOString()
     this.calendarApi.events.list({
       calendarId: this.calendarId,
-      timeMin: (new Date()).toISOString(),
-      maxResults: 10,
+      timeMin: selectedDay,
+      timeMax: nextDay,
       singleEvents: true,
       orderBy: 'startTime'
     },(err, res) => {

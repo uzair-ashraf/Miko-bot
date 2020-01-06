@@ -4,7 +4,7 @@ class User {
     this.name = name;
     this.channel = channel;
     this.timeout = null;
-    this.possibleData = null;
+    this.possibleDates = null;
     this.stage = {
       dateSelected: false,
       timeSelected: false
